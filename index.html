@@ -117,6 +117,20 @@ a { color: var(--accent); }
 .band-admin { background: #0E2B61; }
 
 /* services */
+.shoot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.shoot-btn { position: relative; display: grid; gap: 6px; align-content: center; min-height: 96px; padding: 18px 22px; border-radius: 12px; text-decoration: none; background: #0B2250; color: #fff; border: 2px solid var(--accent); animation: glow 2.6s ease-in-out infinite; transition: transform .2s ease, background .2s ease; }
+.shoot-btn:hover, .shoot-btn:focus-visible { transform: translateY(-3px); background: var(--accent); color: #fff; }
+.sb-name { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: .02em; text-transform: uppercase; }
+.sb-desc { font-size: 14px; color: #CBD8EE; opacity: 0; transform: translateY(6px); animation: sbIn .7s ease .3s forwards; }
+.shoot-btn:hover .sb-desc { color: #fff; }
+.shoot-btn:nth-child(2) .sb-desc { animation-delay: .5s; } .shoot-btn:nth-child(3) .sb-desc { animation-delay: .7s; }
+.shoot-btn:nth-child(4) .sb-desc { animation-delay: .9s; } .shoot-btn:nth-child(5) .sb-desc { animation-delay: 1.1s; } .shoot-btn:nth-child(6) .sb-desc { animation-delay: 1.3s; }
+@keyframes glow { 0%, 100% { box-shadow: 0 0 6px rgba(255, 107, 61, .45), 0 0 14px rgba(255, 107, 61, .25); } 50% { box-shadow: 0 0 16px rgba(255, 107, 61, .95), 0 0 34px rgba(255, 107, 61, .55); } }
+@keyframes sbIn { to { opacity: 1; transform: none; } }
+.cat { scroll-margin-top: 20px; }
+.cat:target { animation: tgt 1.6s ease; }
+@keyframes tgt { 0%, 60% { box-shadow: 0 0 0 3px var(--accent), 0 0 30px rgba(255, 107, 61, .8); } 100% { box-shadow: none; } }
+@media (prefers-reduced-motion: reduce) { .shoot-btn, .cat:target { animation: none; } .sb-desc { animation: none; opacity: 1; transform: none; } }
 .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 20px; }
 .service { display: grid; gap: 8px; align-content: start; padding-top: 16px; border-top: 3px solid var(--accent); min-width: 0; }
 .service p { color: var(--ink-soft); font-size: 15px; }
@@ -309,14 +323,15 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
     <div class="sec-head">
       <span class="label eyebrow">Our services</span>
       <h2 id="h-serv">What we shoot</h2>
-      <p>Studio sessions, graduations, family, headshots and corporate shoots, plus video and events on request.</p>
+      <p>Tap a shoot to jump to its details and pricing.</p>
     </div>
-    <div class="services">
-      <div class="service"><h3>Graduation parties</h3><p>Photos for your graduation celebration, solo or with the people who came to cheer.</p></div>
-      <div class="service"><h3>Family portraits</h3><p>Studio sittings for the whole family.</p></div>
-      <div class="service"><h3>Professional headshots</h3><p>Clean, confident portraits for work and online profiles.</p></div>
-      <div class="service"><h3>Studio sessions</h3><p>Book the studio for your own idea or shoot.</p></div>
-      <div class="service"><h3>Corporate shoots</h3><p>Staff portraits, team photos and company events.</p></div>
+    <div class="shoot-grid">
+      <a class="shoot-btn" href="#cat-studio"><span class="sb-name">Studio sessions</span><span class="sb-desc">Book the studio for your own idea or shoot.</span></a>
+      <a class="shoot-btn" href="#cat-grad"><span class="sb-name">Graduations and graduation parties</span><span class="sb-desc">Gown and cap portraits, and the celebration after.</span></a>
+      <a class="shoot-btn" href="#cat-family"><span class="sb-name">Family portraits</span><span class="sb-desc">Studio sittings for the whole family.</span></a>
+      <a class="shoot-btn" href="#cat-birthday"><span class="sb-name">Birthdays</span><span class="sb-desc">Balloons, backdrops and big smiles.</span></a>
+      <a class="shoot-btn" href="#cat-corporate"><span class="sb-name">Corporate events and meetings</span><span class="sb-desc">Staff portraits, teams, events and meetings.</span></a>
+      <a class="shoot-btn" href="#cat-wedding"><span class="sb-name">Weddings and traditional weddings | Ruracio</span><span class="sb-desc">Your big day, covered with care.</span></a>
     </div>
   </div>
 </section>
@@ -519,12 +534,14 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
       includes: ["Unlimited poses", "35 edited photos", "Online gallery"] },
     { id: 'g-shoot', cat: 'grad', name: 'Graduation shoot', duration: 'Studio or campus', price: null,
       includes: ["Solo or with family and friends", "Tell us the date and number of graduates"] },
-    { id: 'ga-party', cat: 'after', name: 'Graduation after-party', duration: 'Your venue', price: null,
+    { id: 'ga-party', cat: 'grad', name: 'Graduation after-party', duration: 'Your venue', price: null,
       includes: ["Coverage of the celebration", "Tell us the date, place and guest count"] },
     { id: 'w-wedding', cat: 'wedding', name: 'Wedding coverage', duration: 'Full day or half day', price: null,
       includes: ["Photos, with video on request", "Tell us the date, venue and schedule"] },
-    { id: 'w-ruracio', cat: 'ruracio', name: 'Traditional wedding | Ruracio', duration: 'Full day or half day', price: null,
+    { id: 'w-ruracio', cat: 'wedding', name: 'Traditional wedding | Ruracio', duration: 'Full day or half day', price: null,
       includes: ["Photos, with video on request", "Tell us the date, place and schedule"] },
+    { id: 'o-family', cat: 'family', name: 'Family portraits', duration: 'Studio sitting', price: null,
+      includes: ["Tell us the group size and date"] },
     { id: 'o-birthday', cat: 'birthday', name: 'Birthday shoot', duration: 'Studio or your venue', price: null,
       includes: ["Kids and adults", "Tell us the age, date and place"] },
     { id: 'o-corporate', cat: 'corporate', name: 'Corporate events and meetings', duration: 'Studio or your office', price: null,
@@ -532,12 +549,11 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   ];
   var CATS = [
     { id: 'studio', name: 'Studio sessions', blurb: 'Book the studio for your own idea or shoot. Fixed rates.', photos: ['studio-01.jpg', 'studio-03.jpg', 'studio-04.jpg', 'studio-05.jpg'] },
-    { id: 'grad', name: 'Graduations', blurb: 'Gown, cap and scroll portraits, solo or with the people who came to cheer.', photos: ["grad-01.jpg", "grad-02.jpg", "grad-03.jpg", "grad-04.jpg", "grad-05.jpg", "grad-06.jpg", "grad-07.jpg", "grad-08.jpg", "grad-09.jpg", "grad-10.jpg", "grad-11.jpg", "grad-12.jpg", "grad-13.jpg", "grad-14.jpg", "grad-15.jpg", "grad-16.jpg", "grad-17.jpg", "grad-18.jpg"] },
-    { id: 'after', name: 'Graduation after-parties', blurb: 'The celebration after the ceremony.', photos: [] },
-    { id: 'wedding', name: 'Weddings', blurb: 'Your wedding day, from preparation to the last dance.', photos: [] },
-    { id: 'ruracio', name: 'Traditional weddings | Ruracio', blurb: 'Ruracio and traditional ceremonies, covered with care.', photos: [] },
+    { id: 'grad', name: 'Graduations and graduation parties', blurb: 'Gown, cap and scroll portraits, plus the celebration after the ceremony.', photos: ["grad-01.jpg", "grad-02.jpg", "grad-03.jpg", "grad-04.jpg", "grad-05.jpg", "grad-06.jpg", "grad-07.jpg", "grad-08.jpg", "grad-09.jpg", "grad-10.jpg", "grad-11.jpg", "grad-12.jpg", "grad-13.jpg", "grad-14.jpg", "grad-15.jpg", "grad-16.jpg", "grad-17.jpg", "grad-18.jpg"] },
+    { id: 'family', name: 'Family portraits', blurb: 'Studio sittings for the whole family.', photos: ['studio-02.jpg', 'studio-03.jpg'] },
     { id: 'birthday', name: 'Birthdays', blurb: 'Kids and adult birthday shoots with balloons and backdrops.', photos: ['studio-02.jpg', 'studio-06.jpg', 'studio-07.jpg', 'studio-09.jpg', 'studio-10.jpg'] },
-    { id: 'corporate', name: 'Corporate events and meetings', blurb: 'Staff portraits, team photos, company events and meetings.', photos: ['studio-04.jpg', 'studio-05.jpg', 'studio-08.jpg'] }
+    { id: 'corporate', name: 'Corporate events and meetings', blurb: 'Staff portraits, team photos, company events and meetings.', photos: ['studio-04.jpg', 'studio-05.jpg', 'studio-08.jpg'] },
+    { id: 'wedding', name: 'Weddings and traditional weddings | Ruracio', blurb: 'Your wedding day and Ruracio, covered with care.', photos: [] }
   ];
 
   var BASE = 'photos/';
@@ -614,7 +630,7 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
           }))
         : h('p', { class: 'soon', text: 'Photos for this folder are coming soon. Message us on WhatsApp to see more of our work.' });
       var panelId = 'folder-' + c.id;
-      return h('article', { class: 'cat' + (opened ? ' is-open' : '') },
+      return h('article', { class: 'cat' + (opened ? ' is-open' : ''), id: 'cat-' + c.id },
         cover,
         h('div', { class: 'cat-body' },
           h('h3', { text: c.name }),
