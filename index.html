@@ -125,7 +125,30 @@ a { color: var(--accent); }
 .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
 .tab { min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); font: 600 15px/1 var(--font-body); cursor: pointer; }
 .tab[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-.pkgs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 20px; }
+.cat { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 8px; background: var(--paper-2); overflow: hidden; min-width: 0; }
+.cat-img { margin: 0; aspect-ratio: 16 / 10; overflow: hidden; background: var(--paper); }
+.cat-img img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
+.cat-img.empty { display: grid; place-items: center; color: var(--accent); }
+.cat-img.empty svg { width: 56px; height: 56px; }
+.cat-body { display: flex; flex-direction: column; gap: 12px; padding: 22px; flex: 1; }
+.cat-blurb { color: var(--ink-soft); font-size: 15px; }
+.pk-rows { display: grid; gap: 12px; }
+.pk-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+.pk-row h4 { font-size: 17px; margin: 0; }
+.pk-row .dur { color: var(--ink-soft); font-size: 14px; }
+.pk-row .price { font-family: var(--font-display); font-weight: 700; font-size: 24px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.pk-row .price.quote { font-size: 16px; font-family: var(--font-body); font-weight: 600; color: var(--ink-soft); }
+.pk-row ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; display: grid; gap: 3px; }
+.pk-row.is-chosen { box-shadow: inset 3px 0 0 var(--accent); padding-left: 12px; }
+.gal-btn { align-self: stretch; margin-top: auto; }
+.ico { display: inline-flex; margin-right: 8px; vertical-align: middle; }
+.folder { margin-top: 4px; }
+.folder[hidden] { display: none; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.thumbs button { padding: 0; border: 0; border-radius: 6px; overflow: hidden; aspect-ratio: 1; background: var(--paper); cursor: zoom-in; }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
+.soon { color: var(--ink-soft); font-size: 14px; }
+.pkgs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 20px; align-items: start; }
 .pkg { display: flex; flex-direction: column; gap: 10px; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper-2); min-width: 0; }
 .pkg.is-chosen { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
 .pkg .kind { color: var(--accent); }
@@ -304,9 +327,8 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
     <div class="sec-head">
       <span class="label eyebrow">Packages</span>
       <h2 id="h-pk">Our packages</h2>
-      <p>Choose a package and it fills in your booking. For anything else, we agree the price when we contact you.</p>
+      <p>Open a folder to see our work, then choose a package to fill in your booking. Where there is no fixed rate, we agree the price when we contact you.</p>
     </div>
-    <div class="tabs" role="group" aria-label="Filter packages" id="tabs"></div>
     <div class="pkgs" id="pkg-grid"></div>
   </div>
 </section>
@@ -502,36 +524,39 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   var CONFIG = { whatsapp: '254743133311' };
 
   var PACKAGES = [
-    { id: 's-mini', kind: 'studio', name: 'Studio Mini', duration: '30 minute session', price: 2500,
-      includes: ["10 edited photos", "Online gallery"],
-      img: 'studio-01.jpg', imgAlt: 'Woman in a striped dress posing with one foot raised' },
-    { id: 's-standard', kind: 'studio', name: 'Studio Standard', duration: '1 hour session', price: 5000,
-      includes: ["20 edited photos", "Family photos included", "Online gallery"],
-      img: 'studio-03.jpg', imgAlt: 'Two women in a studio portrait' },
-    { id: 's-premium', kind: 'studio', name: 'Studio Premium', duration: '90 minute session', price: 8000,
-      includes: ["Unlimited poses", "35 edited photos", "Online gallery"],
-      img: 'studio-07.jpg', imgAlt: 'Birthday portrait holding a 20 balloon' },
-    { id: 'g-shoot', kind: 'grad', name: 'Graduation shoot', duration: 'Studio or campus', price: null,
-      includes: ["Solo or with family and friends", "Tell us the date and number of graduates", "We agree the price when we confirm"],
-      img: 'grad-10.jpg', imgAlt: 'Graduate in a black gown lifting one foot and holding a scroll' },
-    { id: 'o-family', kind: 'other', name: 'Family portraits', duration: 'Studio sitting', price: null,
-      includes: ["Tell us the group size and date", "We agree the price when we confirm"],
-      img: 'studio-02.jpg', imgAlt: 'Mother and child at a birthday set' },
-    { id: 'o-headshot', kind: 'other', name: 'Professional headshots', duration: 'Studio session', price: null,
-      includes: ["Tell us how many people", "We agree the price when we confirm"],
-      img: 'studio-04.jpg', imgAlt: 'Doctor in a white coat with a stethoscope' },
-    { id: 'o-events', kind: 'other', name: 'Birthdays and events', duration: 'Studio or your venue', price: null,
-      includes: ["Tell us the occasion, date and place", "Video coverage can be added on request"],
-      img: 'studio-06.jpg', imgAlt: 'Birthday portrait with number balloons' },
-    { id: 'o-corporate', kind: 'other', name: 'Corporate shoots', duration: 'Studio or your office', price: null,
-      includes: ["Staff portraits, teams and company events", "Tell us the team size, date and place", "We agree the price when we confirm"],
-      img: 'studio-05.jpg', imgAlt: 'Lawyer in a suit and wig on a yellow backdrop' }
+    { id: 's-mini', cat: 'studio', name: 'Studio Mini', duration: '30 minute session', price: 2500,
+      includes: ["10 edited photos", "Online gallery"] },
+    { id: 's-standard', cat: 'studio', name: 'Studio Standard', duration: '1 hour session', price: 5000,
+      includes: ["20 edited photos", "Family photos included", "Online gallery"] },
+    { id: 's-premium', cat: 'studio', name: 'Studio Premium', duration: '90 minute session', price: 8000,
+      includes: ["Unlimited poses", "35 edited photos", "Online gallery"] },
+    { id: 'g-shoot', cat: 'grad', name: 'Graduation shoot', duration: 'Studio or campus', price: null,
+      includes: ["Solo or with family and friends", "Tell us the date and number of graduates"] },
+    { id: 'ga-party', cat: 'after', name: 'Graduation after-party', duration: 'Your venue', price: null,
+      includes: ["Coverage of the celebration", "Tell us the date, place and guest count"] },
+    { id: 'w-wedding', cat: 'wedding', name: 'Wedding coverage', duration: 'Full day or half day', price: null,
+      includes: ["Photos, with video on request", "Tell us the date, venue and schedule"] },
+    { id: 'w-ruracio', cat: 'ruracio', name: 'Traditional wedding | Ruracio', duration: 'Full day or half day', price: null,
+      includes: ["Photos, with video on request", "Tell us the date, place and schedule"] },
+    { id: 'o-birthday', cat: 'birthday', name: 'Birthday shoot', duration: 'Studio or your venue', price: null,
+      includes: ["Kids and adults", "Tell us the age, date and place"] },
+    { id: 'o-corporate', cat: 'corporate', name: 'Corporate events and meetings', duration: 'Studio or your office', price: null,
+      includes: ["Staff portraits, teams, events and meetings", "Tell us the team size, date and place"] }
+  ];
+  var CATS = [
+    { id: 'studio', name: 'Studio sessions', blurb: 'Book the studio for your own idea or shoot. Fixed rates.', photos: ['studio-01.jpg', 'studio-03.jpg', 'studio-04.jpg', 'studio-05.jpg'] },
+    { id: 'grad', name: 'Graduations', blurb: 'Gown, cap and scroll portraits, solo or with the people who came to cheer.', photos: ["grad-01.jpg", "grad-02.jpg", "grad-03.jpg", "grad-04.jpg", "grad-05.jpg", "grad-06.jpg", "grad-07.jpg", "grad-08.jpg", "grad-09.jpg", "grad-10.jpg", "grad-11.jpg", "grad-12.jpg", "grad-13.jpg", "grad-14.jpg", "grad-15.jpg", "grad-16.jpg", "grad-17.jpg", "grad-18.jpg"] },
+    { id: 'after', name: 'Graduation after-parties', blurb: 'The celebration after the ceremony.', photos: [] },
+    { id: 'wedding', name: 'Weddings', blurb: 'Your wedding day, from preparation to the last dance.', photos: [] },
+    { id: 'ruracio', name: 'Traditional weddings | Ruracio', blurb: 'Ruracio and traditional ceremonies, covered with care.', photos: [] },
+    { id: 'birthday', name: 'Birthdays', blurb: 'Kids and adult birthday shoots with balloons and backdrops.', photos: ['studio-02.jpg', 'studio-06.jpg', 'studio-07.jpg', 'studio-09.jpg', 'studio-10.jpg'] },
+    { id: 'corporate', name: 'Corporate events and meetings', blurb: 'Staff portraits, team photos, company events and meetings.', photos: ['studio-04.jpg', 'studio-05.jpg', 'studio-08.jpg'] }
   ];
 
   var BASE = 'photos/';
   var PHOTOS = [{"f": "grad-01.jpg", "w": 698, "h": 1250, "c": "grad", "a": "Graduate in a red dress with a blue and black hood, standing full length"}, {"f": "grad-02.jpg", "w": 937, "h": 1235, "c": "grad", "a": "Close portrait of a graduate in a red dress, black cap and blue hood"}, {"f": "grad-03.jpg", "w": 872, "h": 1234, "c": "grad", "a": "Graduate in a red dress holding a rolled scroll"}, {"f": "grad-04.jpg", "w": 870, "h": 1250, "c": "grad", "a": "Graduate in a black gown with a gold hood over a sequin dress"}, {"f": "grad-05.jpg", "w": 1028, "h": 1250, "c": "grad", "a": "Graduate holding her cap in front of her face"}, {"f": "grad-06.jpg", "w": 1056, "h": 1250, "c": "grad", "a": "Graduate in a maroon gown standing beside sunflowers"}, {"f": "grad-07.jpg", "w": 1038, "h": 1250, "c": "grad", "a": "Graduate in a maroon gown with a beaded collar"}, {"f": "grad-08.jpg", "w": 1030, "h": 1250, "c": "grad", "a": "Graduate in a maroon gown with a leopard print top"}, {"f": "grad-09.jpg", "w": 854, "h": 1250, "c": "grad", "a": "Graduate in a white headscarf and blue hood, holding her cap"}, {"f": "grad-10.jpg", "w": 1027, "h": 1250, "c": "grad", "a": "Graduate in a black gown lifting one foot and holding a scroll"}, {"f": "grad-11.jpg", "w": 1042, "h": 1250, "c": "grad", "a": "Graduate in a maroon gown holding a scroll"}, {"f": "grad-12.jpg", "w": 1004, "h": 1250, "c": "grad", "a": "Graduate in a maroon gown and cap, smiling with a scroll"}, {"f": "grad-13.jpg", "w": 1014, "h": 1250, "c": "grad", "a": "Graduate in a black gown holding a scroll in a playful pose"}, {"f": "grad-14.jpg", "w": 1080, "h": 1123, "c": "grad", "a": "Graduate in a cap and blue and green stole in front of a bookshelf"}, {"f": "grad-15.jpg", "w": 1022, "h": 1250, "c": "grad", "a": "Graduate in a white and blue blazer and cap"}, {"f": "grad-16.jpg", "w": 1051, "h": 1250, "c": "grad", "a": "Graduate in a white dress holding a black gown over her shoulder"}, {"f": "grad-17.jpg", "w": 1005, "h": 1250, "c": "grad", "a": "Graduate in a white blazer holding her cap against her cheek"}, {"f": "grad-18.jpg", "w": 1027, "h": 1250, "c": "grad", "a": "Graduate in a black gown tossing a cap in the air"}, {"f": "studio-01.jpg", "w": 769, "h": 1250, "c": "studio", "a": "Woman in a striped dress posing with one foot raised"}, {"f": "studio-02.jpg", "w": 1080, "h": 1059, "c": "studio", "a": "Mother and child at a birthday set"}, {"f": "studio-03.jpg", "w": 1027, "h": 1250, "c": "studio", "a": "Two women in a studio portrait"}, {"f": "studio-04.jpg", "w": 1032, "h": 1250, "c": "studio", "a": "Doctor in a white coat with a stethoscope"}, {"f": "studio-05.jpg", "w": 1033, "h": 1250, "c": "studio", "a": "Lawyer in a suit and wig on a yellow backdrop"}, {"f": "studio-06.jpg", "w": 1029, "h": 1250, "c": "studio", "a": "Birthday portrait with number balloons"}, {"f": "studio-07.jpg", "w": 1010, "h": 1128, "c": "studio", "a": "Birthday portrait holding a 20 balloon"}, {"f": "studio-08.jpg", "w": 1013, "h": 1250, "c": "studio", "a": "Cycling team group portrait"}, {"f": "studio-09.jpg", "w": 1013, "h": 1250, "c": "studio", "a": "Toddler with a gold number 2 balloon"}, {"f": "studio-10.jpg", "w": 1013, "h": 1250, "c": "studio", "a": "Toddler at a birthday backdrop"}];
 
-  var KIND = { studio: 'Studio', grad: 'Graduation', other: 'Other shoots' };
+  var openCats = {};
   var STATUS = { 'new': 'New', confirmed: 'Confirmed', done: 'Done', cancelled: 'Cancelled' };
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -575,27 +600,42 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   }
 
   /* packages */
-  var filter = 'all', chosen = '';
-  var TABS = [['all', 'All'], ['studio', 'Studio'], ['grad', 'Graduation'], ['other', 'Other shoots']];
-
-  function renderTabs() {
-    $('#tabs').replaceChildren.apply($('#tabs'), TABS.map(function (t) {
-      return h('button', { type: 'button', class: 'tab', 'aria-pressed': filter === t[0] ? 'true' : 'false',
-        onclick: function () { filter = t[0]; renderTabs(); renderPackages(); } }, t[1]);
-    }));
-  }
+  var chosen = '';
+  var FOLDER = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="2.6"/></svg>';
+  function icon(svg) { var s = document.createElement('span'); s.className = 'ico'; s.innerHTML = svg; return s; }
+  function photoMeta(f) { return PHOTOS.filter(function (x) { return x.f === f; })[0] || { f: f, a: 'Rongai Studios photo' }; }
   function renderPackages() {
-    var cards = PACKAGES.filter(function (p) { return filter === 'all' || p.kind === filter; }).map(function (p) {
-      var on = p.id === chosen;
-      return h('article', { class: 'pkg' + (on ? ' is-chosen' : '') },
-        h('figure', { class: 'pkg-img' }, h('img', { src: BASE + p.img, alt: p.imgAlt, loading: 'lazy' })),
-        h('p', { class: 'label kind', text: KIND[p.kind] }),
-        h('h3', { text: p.name }),
-        h('p', { class: 'dur', text: p.duration }),
-        h('p', { class: 'price' + (p.price ? '' : ' quote'), text: priceText(p) }),
-        h('ul', null, p.includes.map(function (i) { return h('li', { text: i }); })),
-        h('button', { type: 'button', class: 'btn ' + (on ? 'btn-solid' : 'btn-line'), 'aria-pressed': on ? 'true' : 'false',
-          onclick: function () { choose(p.id); } }, on ? 'Selected' : 'Choose this package'));
+    var cards = CATS.map(function (c) {
+      var list = c.photos.map(photoMeta), opened = !!openCats[c.id];
+      var pk = PACKAGES.filter(function (p) { return p.cat === c.id; });
+      var cover = list[0] ? h('figure', { class: 'cat-img' }, h('img', { src: BASE + list[0].f, alt: list[0].a, loading: 'lazy' })) : h('figure', { class: 'cat-img empty' }, icon(FOLDER));
+      var rows = pk.map(function (p) {
+        var on = p.id === chosen;
+        return h('div', { class: 'pk-row' + (on ? ' is-chosen' : '') },
+          h('div', null,
+            h('h4', { text: p.name }),
+            h('p', { class: 'dur', text: p.duration }),
+            h('p', { class: 'price' + (p.price ? '' : ' quote'), text: priceText(p) }),
+            pk.length === 1 || p.price ? h('ul', null, p.includes.map(function (i) { return h('li', { text: i }); })) : null),
+          h('button', { type: 'button', class: 'btn ' + (on ? 'btn-solid' : 'btn-line'), 'aria-pressed': on ? 'true' : 'false',
+            onclick: function () { choose(p.id); } }, on ? 'Selected' : (p.price ? 'Choose' : 'Request a quote')));
+      });
+      var thumbs = list.length
+        ? h('div', { class: 'thumbs' }, list.map(function (x, i) {
+            return h('button', { type: 'button', 'aria-label': 'View photo: ' + x.a, onclick: function () { openLb(i, list); } },
+              h('img', { src: BASE + x.f, alt: x.a, loading: 'lazy' }));
+          }))
+        : h('p', { class: 'soon', text: 'Photos for this folder are coming soon. Message us on WhatsApp to see more of our work.' });
+      var panelId = 'folder-' + c.id;
+      return h('article', { class: 'cat' + (opened ? ' is-open' : '') },
+        cover,
+        h('div', { class: 'cat-body' },
+          h('h3', { text: c.name }),
+          h('p', { class: 'cat-blurb', text: c.blurb }),
+          h('div', { class: 'pk-rows' }, rows),
+          h('button', { type: 'button', class: 'btn btn-line gal-btn', 'aria-expanded': opened ? 'true' : 'false', 'aria-controls': panelId,
+            onclick: function () { openCats[c.id] = !openCats[c.id]; renderPackages(); } }, icon(FOLDER), opened ? 'Close gallery' : 'View our gallery'),
+          h('div', { class: 'folder', id: panelId, hidden: !opened }, thumbs)));
     });
     $('#pkg-grid').replaceChildren.apply($('#pkg-grid'), cards);
   }
@@ -620,15 +660,15 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
     }));
   }
   function renderGallery() {
-    shown = PHOTOS.filter(function (x) { return galFilter === 'all' || x.c === galFilter; });
+    var galList = shown = PHOTOS.filter(function (x) { return galFilter === 'all' || x.c === galFilter; });
     $('#masonry').replaceChildren.apply($('#masonry'), shown.map(function (x, i) {
-      return h('figure', null, h('button', { type: 'button', 'aria-label': 'View photo: ' + x.a, onclick: function () { openLb(i); } },
+      return h('figure', null, h('button', { type: 'button', 'aria-label': 'View photo: ' + x.a, onclick: function () { openLb(i, galList); } },
         h('img', { src: BASE + x.f, alt: x.a, width: x.w, height: x.h, loading: 'lazy' })));
     }));
   }
   var lb = $('#lightbox'), lbImg = $('#lb-img'), lbFrom = null;
   function showLb() { var x = shown[lbIndex]; lbImg.src = BASE + x.f; lbImg.alt = x.a; }
-  function openLb(i) { lbFrom = document.activeElement; lbIndex = i; showLb(); lb.hidden = false; $('.lb-close', lb).focus(); }
+  function openLb(i, list) { if (list) shown = list; lbFrom = document.activeElement; lbIndex = i; showLb(); lb.hidden = false; $('.lb-close', lb).focus(); }
   function closeLb() { lb.hidden = true; lbImg.removeAttribute('src'); if (lbFrom && lbFrom.focus) lbFrom.focus(); }
   function stepLb(d) { lbIndex = (lbIndex + d + shown.length) % shown.length; showLb(); }
   $('.lb-close', lb).addEventListener('click', closeLb);
@@ -643,8 +683,8 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   /* form */
   var sel = $('#f-package');
   sel.append(h('option', { value: '' }, 'Choose a package'));
-  ['studio', 'grad', 'other'].forEach(function (k) {
-    sel.append(h('optgroup', { label: KIND[k] }, PACKAGES.filter(function (p) { return p.kind === k; }).map(function (p) {
+  CATS.forEach(function (c) {
+    sel.append(h('optgroup', { label: c.name }, PACKAGES.filter(function (p) { return p.cat === c.id; }).map(function (p) {
       return h('option', { value: p.id }, p.name + (p.price ? ' (' + money(p.price) + ')' : ' (quote on request)'));
     })));
   });
@@ -816,7 +856,6 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   })();
 
   /* start */
-  renderTabs();
   renderPackages();
   renderGalTabs();
   renderGallery();
