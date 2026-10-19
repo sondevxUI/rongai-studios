@@ -269,7 +269,6 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
     </a>
     <nav class="nav" aria-label="Main">
       <a class="link" href="#packages">Packages</a>
-      <a class="link" href="#gallery">Gallery</a>
       <a class="link" href="#how">How it works</a>
       <a class="link" href="#visit">Find us</a>
       <a class="btn btn-solid" href="#book">Book a shoot</a>
@@ -333,18 +332,6 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   </div>
 </section>
 
-  <section class="sec band-gallery" id="gallery" aria-labelledby="h-gal">
-<div class="wrap">
-    <div class="sec-head">
-      <span class="label eyebrow">Gallery</span>
-      <h2 id="h-gal">Our work</h2>
-      <p>Graduation portraits and studio sessions, shot at the studio.</p>
-    </div>
-    <div class="tabs" role="group" aria-label="Filter gallery" id="gal-tabs"></div>
-    <div class="masonry" id="masonry"></div>
-    <p class="gal-note">Tap a photo to see it full size.</p>
-  </div>
-</section>
 
   <section class="sec band-light band-tint" id="how" aria-labelledby="h-how">
 <div class="wrap">
@@ -650,22 +637,7 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
   }
 
   /* gallery */
-  var galFilter = 'all', shown = [], lbIndex = 0;
-  var GTABS = [['all', 'All photos'], ['grad', 'Graduation portraits'], ['studio', 'Studio sessions']];
-  function renderGalTabs() {
-    $('#gal-tabs').replaceChildren.apply($('#gal-tabs'), GTABS.map(function (t) {
-      var n = PHOTOS.filter(function (x) { return t[0] === 'all' || x.c === t[0]; }).length;
-      return h('button', { type: 'button', class: 'tab', 'aria-pressed': galFilter === t[0] ? 'true' : 'false',
-        onclick: function () { galFilter = t[0]; renderGalTabs(); renderGallery(); } }, t[1] + ' (' + n + ')');
-    }));
-  }
-  function renderGallery() {
-    var galList = shown = PHOTOS.filter(function (x) { return galFilter === 'all' || x.c === galFilter; });
-    $('#masonry').replaceChildren.apply($('#masonry'), shown.map(function (x, i) {
-      return h('figure', null, h('button', { type: 'button', 'aria-label': 'View photo: ' + x.a, onclick: function () { openLb(i, galList); } },
-        h('img', { src: BASE + x.f, alt: x.a, width: x.w, height: x.h, loading: 'lazy' })));
-    }));
-  }
+  var shown = [], lbIndex = 0;
   var lb = $('#lightbox'), lbImg = $('#lb-img'), lbFrom = null;
   function showLb() { var x = shown[lbIndex]; lbImg.src = BASE + x.f; lbImg.alt = x.a; }
   function openLb(i, list) { if (list) shown = list; lbFrom = document.activeElement; lbIndex = i; showLb(); lb.hidden = false; $('.lb-close', lb).focus(); }
@@ -857,8 +829,6 @@ footer .tag { font-family: var(--font-script); font-size: 26px; color: var(--gol
 
   /* start */
   renderPackages();
-  renderGalTabs();
-  renderGallery();
   updateSummary();
 
   (async function () {
